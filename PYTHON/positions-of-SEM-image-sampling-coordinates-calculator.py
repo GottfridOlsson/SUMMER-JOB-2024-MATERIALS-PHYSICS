@@ -27,18 +27,11 @@ def add_square_to_ax(side_length, x_pos, y_pos, ax, edgecolor='red', faceolor='n
     add_rectangle_to_ax(side_length, side_length, x_pos, y_pos, ax, edgecolor=edgecolor, faceolor=faceolor)
 def add_circle_to_ax(radius, x_pos, y_pos, ax, edgecolor='gray', faceolor='gray', alpha=1):
     ax.add_artist(plt.Circle((x_pos,y_pos), radius=radius, edgecolor=edgecolor, facecolor=faceolor, alpha=alpha))
-def find_circle_center_and_radius_from_ABCD(A, B, C, D, view_fit=False):
-    # A, B, C, D are tuples (x_i, y_i) of the coordinates of the SEM
-    # taken at the theta=0, theta=90deg, theta=180deg, and theta=270deg of the Li deposition circle
-    # This function returns the radius and the coordinates (x,y) of the center of the deposition circle
-    data = [[A[0], A[1]],
-            [B[0], B[1]],
-            [C[0], C[1]],
-            [D[0], D[1]]]
+def find_circle_center_and_radius_from_ABCD(points_along_circle, view_fit=False):
     # fit circle equation to four points
-    x_center_fit, y_center_fit, r_fit, sigma_residual_fit = circle_fit.least_squares_circle(data)
+    x_center_fit, y_center_fit, r_fit, sigma_residual_fit = circle_fit.least_squares_circle(points_along_circle)
     if view_fit:
-        circle_fit.plot_data_circle(data, x_center_fit, y_center_fit, r_fit)
+        circle_fit.plot_data_circle(points_along_circle, x_center_fit, y_center_fit, r_fit)
     return  x_center_fit, y_center_fit, r_fit, sigma_residual_fit
 def add_3_by_3_matrix_of_squares_to_ax(square_side_length, x0_matrix, y0_matrix, distance_between_squares, ax, n_decimals=3, draw_numbers=True, edgecolor='red', faceolor='none'):
     a = square_side_length
@@ -86,23 +79,32 @@ def calculate_3_by_3_matrix_of_squares_from_center_coordinates(x_center, y_cente
             xy_coordinates_3_by_3_matrix_squares_numbers.append(center_position_square_ij)
 
     return xy_coordinates_3_by_3_matrix_squares_numbers
-
+def get_current_date_and_time_as_ISO8601_string():
+    import datetime
+    date_and_time = datetime.datetime.now().strftime("%Y%m%dT%H%M%S")
+    return date_and_time
 
 
 # MEASURED VALUES OF POINTS AND CIRCLE FIT #
 
-A=(-10, 0)
-B=(0.3, -10)
-C=(-20, -10.3)
-D=(-10, -20.7)
+#along the perimiter of the deposited Li, in the coordinate system of the SEM instrument (x, y)
+A=(10, 0)
+B=(-0.3, 10)
+C=(20, 10.3)
+D=(10, 19.8)
+#E=()
+#F=()
+#G=()
+#H=()
 
-distance_between_SEM_images = 1 # mm, say we want to have this distance (cartesian) between each square in the sampled matrix on the Cu
-include_AI_squares = True
+points_on_the_circle = [[A[0], A[1]], [B[0], B[1]], [C[0], C[1]],[D[0], D[1]]]#, [E[0], E[1]], [F[0], F[1]], [G[0], G[1]], [H[0], H[1]]]
+distance_between_SEM_images = 1 # mm, say we want to have this distance (x or y) between each square in the sampled matrix on the Cu
+include_AI_squares = False
 view_circle_fit = True
-
+export_figure = False
 
 # Circle fit
-x_center_fit, y_center_fit, r_fit, sigma_residual_fit = find_circle_center_and_radius_from_ABCD(A, B, C, D, view_circle_fit)
+x_center_fit, y_center_fit, r_fit, sigma_residual_fit = find_circle_center_and_radius_from_ABCD(points_on_the_circle, view_circle_fit)
 x0 = x_center_fit
 y0 = y_center_fit
 print(f"\nCircle with radius {r_fit:.2f} at origo: ({x0:.2f}, {y0:.2f})")
@@ -111,7 +113,7 @@ print(f"Residual error of circle fit: {sigma_residual_fit:.5f}\n")
 # Plot values
 r_real = 2.5 # mm (the punched Li has diameter 5 mm, or r = 2.5 mm in reality)
 distance_between_squares = (r_fit/r_real) * distance_between_SEM_images # gives the same unit that r_fit is in
-square_side_length = r_fit/20 #just to see the squares in the plot
+square_side_length = r_fit/15 #just to see the squares in the plot
 distance_between_squares_AI_training = distance_between_squares/2.1 # extra images for AI-training, value arbitrarily chosen
 
 
@@ -155,4 +157,6 @@ axs[0].set_ylabel("$y$-coordinate")
 axs[1].axis('tight')
 axs[1].axis('off')
 
+if export_figure:
+    f.export_figure_as_pdf("C:\\SUMMER-JOB-2024-MATERIALS-PHYSICS\\PYTHON\\Example_positions_SEM-images-for-analysis_on-Cu-surface_" + get_current_date_and_time_as_ISO8601_string() +".pdf")
 plt.show()
