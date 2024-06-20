@@ -121,10 +121,10 @@ def get_current_date_and_time_as_ISO8601_string():
 # MEASURED VALUES OF POINTS AND CIRCLE FIT #
 
 #along the perimiter of the deposited Li, in the coordinate system of the SEM instrument (x, y)
-A=(10, 0)
-B=(-0.3, 10)
-C=(20, 10.3)
-D=(10, 19.8)
+A=(-0.097, -5.429)
+B=(-5.211, -0.629)
+C=(-10.082, -5.686) 
+D=(-4.975, -10.523)
 #E=()
 #F=()
 #G=()
