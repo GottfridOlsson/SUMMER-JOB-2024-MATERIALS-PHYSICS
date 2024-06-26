@@ -122,21 +122,13 @@ def get_current_date_and_time_as_ISO8601_string():
 
 #along the perimiter of the deposited Li, in the coordinate system of the SEM instrument (x, y)
 
-'''
-2024-06-18
 
-S06
-
-A=(-0.097, -5.429)
-B=(-5.211, -0.629)
-C=(-10.082, -5.686) 
-D=(-4.975, -10.523)
-'''
-
-A=(-0.097, -5.429)
-B=(-5.211, -0.629)
-C=(-10.082, -5.686) 
-D=(-4.975, -10.523)
+x0 = -3.3 #manual center
+y0 = 4.8 #manual center
+#A=(-0.097, -5.429)
+#B=(-5.211, -0.629)
+#C=(-10.082, -5.686) 
+#D=(-4.975, -10.523)
 #E=()
 #F=()
 #G=()
@@ -145,13 +137,13 @@ D=(-4.975, -10.523)
 points_on_the_circle = [[A[0], A[1]], [B[0], B[1]], [C[0], C[1]],[D[0], D[1]]]#, [E[0], E[1]], [F[0], F[1]], [G[0], G[1]], [H[0], H[1]]]
 distance_between_SEM_images = 1 # mm, say we want to have this distance (x or y) between each square in the sampled matrix on the Cu
 include_AI_squares = False
-view_circle_fit = True
+view_circle_fit = False
 export_figure = False
 
 # Circle fit
 x_center_fit, y_center_fit, r_fit, sigma_residual_fit = find_circle_center_and_radius_from_ABCD(points_on_the_circle, view_circle_fit)
-x0 = x_center_fit
-y0 = y_center_fit
+#x0 = x_center_fit
+#y0 = y_center_fit
 print(f"\nCircle with radius {r_fit:.2f} at origo: ({x0:.2f}, {y0:.2f})")
 print(f"Residual error of circle fit: {sigma_residual_fit:.5f}\n")
 
@@ -160,7 +152,7 @@ r_real = 2.5 # mm (the punched Li has diameter 5 mm, or r = 2.5 mm in reality)
 distance_between_squares = (r_fit/r_real) * distance_between_SEM_images # gives the same unit that r_fit is in
 square_side_length = r_fit/15 #just to see the squares in the plot
 distance_between_squares_AI_training = distance_between_squares/2.1 # extra images for AI-training, value arbitrarily chosen
-
+distance_between_squares_AI_training = 0.5
 
 
 # PLOT #
