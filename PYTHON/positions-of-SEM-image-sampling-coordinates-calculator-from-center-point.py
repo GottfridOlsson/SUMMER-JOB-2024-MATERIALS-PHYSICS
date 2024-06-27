@@ -120,10 +120,11 @@ def get_current_date_and_time_as_ISO8601_string():
 
 
 # SEM-COORDINATES OF THE CENTER OF LI DEPOSITION #
-x0 = 1 #mm 
-y0 = 1  #mm
+x0 = 1.5 #mm 
+y0 = 1.5  #mm
 r_Li = 2.5 #mm
 distance_between_SEM_images = 1 # mm, distance (x or y) between each square in the sampled grid on the Cu
+                                # dx=dy=1 mm for 3x3; dx=dy=0.750 mm for 4x4 
 square_side_length = distance_between_SEM_images/3
 
 
@@ -151,7 +152,7 @@ axs[1].axis('off')
 
 
 # Print relative coordinate changes
-print(f"\nFor center ({x0:.3f}, {y0:.3f}) of 3x3 grid with spacing {distance_between_SEM_images:.2f}, relative coordinates from previous point:")
+print(f"\nFor center ({x0:.3f}, {y0:.3f}) of 3x3 grid with spacing {distance_between_SEM_images:.2f}, relative coordinates from previous point (absolute coordinates):")
 print(f"Point 5 of 9: no change to coordinates; ({x0:.3f}, {y0:.3f})")
 print(f"Point 6 of 9:   x+{distance_between_SEM_images:.2f};    ({x0+distance_between_SEM_images:.3f}, {y0:.3f})")
 print(f"Point 3 of 9:   y+{distance_between_SEM_images:.2f};    ({x0+distance_between_SEM_images:.3f}, {y0+distance_between_SEM_images:.3f})")
@@ -161,9 +162,29 @@ print(f"Point 4 of 9:   y-{distance_between_SEM_images:.2f};    ({x0-distance_be
 print(f"Point 7 of 9:   y-{distance_between_SEM_images:.2f};    ({x0-distance_between_SEM_images:.3f}, {y0-distance_between_SEM_images:.3f})")
 print(f"Point 8 of 9:   x+{distance_between_SEM_images:.2f};    ({x0:.3f}, {y0-distance_between_SEM_images:.3f})")
 print(f"Point 9 of 9:   x+{distance_between_SEM_images:.2f};    ({x0+distance_between_SEM_images:.3f}, {y0-distance_between_SEM_images:.3f})")
+print(f"End of points.")
 
 
-
+d = distance_between_SEM_images
+# Print relative coordinate changes
+print(f"\nFor center ({x0:.3f}, {y0:.3f}) of 4x4 grid with spacing {d:.2f}, relative coordinates from previous point (absolute coordinates):")
+print(f"Point  1 of 16:   x-{3*d/2:.3f}, y+{3*d/2:.3f}; ({x0-3*d/2:.3f}, {y0+3*d/2:.3f})")
+print(f"Point  2 of 16:   x+{d:.2f};           ({x0-3*d/2+1*d:.3f}, {y0+3*d/2:.3f})")
+print(f"Point  3 of 16:   x+{d:.2f};           ({x0-3*d/2+2*d:.3f}, {y0+3*d/2:.3f})")
+print(f"Point  4 of 16:   x+{d:.2f};           ({x0-3*d/2+3*d:.3f}, {y0+3*d/2:.3f})")
+print(f"Point  8 of 16:   y-{d:.2f};           ({x0-3*d/2+3*d:.3f}, {y0+3*d/2-1*d:.3f})")
+print(f"Point  7 of 16:   x-{d:.2f};           ({x0-3*d/2+2*d:.3f}, {y0+3*d/2-1*d:.3f})")
+print(f"Point  6 of 16:   x-{d:.2f};           ({x0-3*d/2+1*d:.3f}, {y0+3*d/2-1*d:.3f})")
+print(f"Point  5 of 16:   x-{d:.2f};           ({x0-3*d/2:.3f}, {y0+3*d/2-1*d:.3f})")
+print(f"Point  9 of 16:   y-{d:.2f};           ({x0-3*d/2:.3f}, {y0+3*d/2-2*d:.3f})")
+print(f"Point 10 of 16:   x+{d:.2f};           ({x0-3*d/2+1*d:.3f}, {y0+3*d/2-2*d:.3f})")
+print(f"Point 11 of 16:   x+{d:.2f};           ({x0-3*d/2+2*d:.3f}, {y0+3*d/2-2*d:.3f})")
+print(f"Point 12 of 16:   x+{d:.2f};           ({x0-3*d/2+3*d:.3f}, {y0+3*d/2-2*d:.3f})")
+print(f"Point 16 of 16:   y-{d:.2f};           ({x0-3*d/2+3*d:.3f}, {y0+3*d/2-3*d:.3f})")
+print(f"Point 15 of 16:   x-{d:.2f};           ({x0-3*d/2+2*d:.3f}, {y0+3*d/2-3*d:.3f})")
+print(f"Point 14 of 16:   x-{d:.2f};           ({x0-3*d/2+1*d:.3f}, {y0+3*d/2-3*d:.3f})")
+print(f"Point 13 of 16:   x-{d:.2f};           ({x0-3*d/2:.3f}, {y0+3*d/2-3*d:.3f})")
+print(f"End of points.")
 
 if False:
     f.export_figure_as_pdf("C:\\SUMMER-JOB-2024-MATERIALS-PHYSICS\\PYTHON\\Example_positions_SEM-images-for-analysis_on-Cu-surface_" + get_current_date_and_time_as_ISO8601_string() +".pdf")
