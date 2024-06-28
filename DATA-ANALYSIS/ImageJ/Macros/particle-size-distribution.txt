@@ -1,0 +1,135 @@
+/* ================================================================================== *
+   
+			 AUTHOR: GOTTFRID OLSSON
+			CREATED: 2024-02-26
+			UPDATED: 2024-06-28
+			  ABOUT: Macro to analyze particle size distribution from
+				 segmented images from ilastik software.
+
+   ================================================================================== */
+
+
+
+// Goes through all the '.tiff' images in a file path and does the analysis of them
+// Saves analyzed images as "{image_path}_analyzed"
+// Saves area (px^2) per identified particle as ".csv" for each analyzed image
+
+
+// VARIABLES //
+
+rootFilepath = "C:/SUMMER-JOB-2024-MATERIALS-PHYSICS/DATA-ANALYSIS/ImageJ/Images for analysis/";
+folderNames = newArray("S08/"); //, "S09/");
+
+TIFF = ".tiff";
+CSV = ".csv";
+nFolders = folderNames.length;
+
+print("START OF ANALYSIS");
+
+for (i = 0; i < nFolders; i++){ //for each folder in which there are several images to analyze
+
+	folderName = folderNames[i];
+	listFilePaths = getFileList(rootFilepath + folderName);
+	
+	for (j = 0; j < listFilePaths.length; j++){ //for each image we want to analyze
+		
+		currentFilePath = rootFilepath + folderName + listFilePaths[j];
+		currentFileName = removeFileExtension(currentFilePath);
+		currentImageName = getStringAfterLastDelimiter(currentFilePath, "/");
+
+		if (endsWith(currentFilePath, ".tiff") == false) {
+        		print("File is not a '.tiff': " + currentFilePath);
+        		break; // Exit the loop if the file is not a .tiff
+    		}
+		print("Analysing: " + currentFilePath);
+		
+		// OPEN //	
+		open(currentFilePath);
+
+		
+		// SET BRIGHTNESS AND CONTRAST TO CORRECT FOR WIERD EXPORT FROM ILASTIK //
+		min = 1; // Set this to your desired minimum pixel value
+		max = 2; // Set this to your desired maximum pixel value
+		setMinAndMax(min, max);
+		run("Apply LUT");// Update the display to show changes
+
+
+		// RUN 'Close' FUNCTION TO GET RID OF SMALL NOISE AND CLOSE NUCLEI //
+		run("Close-");
+
+
+		// CONVERT TO BINARY //
+		setOption("BlackBackground", true);
+		run("Convert to Mask");
+
+
+		// RUN 'Close' FUNCTION TO GET RID OF SMALL NOISE AND CLOSE NUCLEI //
+		run("Close-");
+		
+
+		// WATERSHED TO IDENTIFY PARTICLES THAT STICK TOGETHER //
+		run("Watershed");
+
+
+		// ANALYZE PARTICLE SIZES //
+		analyzedResultsFilepath = currentFileName + "_results" + CSV;
+		analyzedFilepath = currentFileName + "_analyzed" + TIFF;
+
+		run("Analyze Particles...", "size=9-Infinity circularity=0.50-1.00 display clear summarize overlay");
+		
+		selectWindow("Results");
+		saveAs("Results", analyzedResultsFilepath);		
+		run("Close");
+		
+		selectWindow(currentImageName); // + _"analyzed");
+		saveAs("Tiff", analyzedFilepath);
+		run("Close");
+
+	}
+	
+
+	// CLOSE //
+	if(nImages>0){
+   		while (nImages>0) { 			// from: https://imagej.net/ij/macros/Close_All_Windows.txt
+        		selectImage(nImages); 
+        	  	close(); 
+      		}
+	}
+}
+
+print("END OF ANALYSIS");
+
+
+
+
+
+
+// Function to check if a string ends with a specified suffix
+function endsWith(str, suffix) {
+    return endsWithIndex(str, suffix) == (str.length - suffix.length);
+}
+
+// Function to get the index where the suffix starts
+function endsWithIndex(str, suffix) {
+    return indexOf(str, suffix, str.length - suffix.length);
+}
+
+function removeFileExtension(filename) {
+    dotIndex = lastIndexOf(filename, ".");
+    if (dotIndex == -1) {
+        return filename; // No extension found, return the original filename
+    }
+    return substring(filename, 0, dotIndex);
+}
+
+// Function to get the substring after the last occurrence of a delimiter
+function getStringAfterLastDelimiter(inputString, delimiter) {
+    lastIndex = lastIndexOf(inputString, delimiter);
+    if (lastIndex >= 0 && lastIndex < lengthOf(inputString) - 1) {
+        return substring(inputString, lastIndex + 1);
+    } else {
+        return inputString; // Return the original string if delimiter not found or at the end
+    }
+}
+//EOF
+
