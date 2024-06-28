@@ -109,6 +109,7 @@ def print_arrays_to_CSV(path_to_CSV_file, *args, print_message=False):
         else:
             arrays.append(arg)
             lines_per_array.append(len(arg))
+
       
 
     if len(arrays) != len(headers):
