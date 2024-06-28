@@ -120,8 +120,8 @@ def get_current_date_and_time_as_ISO8601_string():
 
 
 # SEM-COORDINATES OF THE CENTER OF LI DEPOSITION #
-x0 = 1.5 #mm 
-y0 = 1.5  #mm
+x0 = 6.0 #mm 
+y0 = 0.1  #mm
 r_Li = 2.5 #mm
 distance_between_SEM_images = 1 # mm, distance (x or y) between each square in the sampled grid on the Cu
                                 # dx=dy=1 mm for 3x3; dx=dy=0.750 mm for 4x4 
@@ -129,26 +129,27 @@ square_side_length = distance_between_SEM_images/3
 
 
 # PLOT #
-f.set_LaTeX_and_CMU(True) #must run before plotting
-figure, axs = plt.subplots(1, 2, figsize=(8, 5))
-add_circle_to_ax(r_Li, x0, y0, axs[0], edgecolor='black', faceolor='gray', alpha=0.5) #gray circle = area of deposited Li
-    
-# Squares to take SEM images for analysis
-xy_coordinates_3_by_3_matrix_squares_numbers = add_3_by_3_matrix_of_squares_to_ax(square_side_length, x0, y0, distance_between_SEM_images, axs[0], n_decimals=3)
-axs[1].table(xy_coordinates_3_by_3_matrix_squares_numbers, colLabels=('Square \\#', '$x$', '$y$'), fontsize=19, loc='center', edges='open', colLoc ='center', rowLoc='center', cellLoc='center')
-for (i, x, y) in xy_coordinates_3_by_3_matrix_squares_numbers:
-    if i==1: print(f"\nPositions for the squares for analysis of SEM images (x, y):")
-    print(f"Position {i} of 9: ({x:.3f}, {y:.3f})")
+if False:
+    f.set_LaTeX_and_CMU(True) #must run before plotting
+    figure, axs = plt.subplots(1, 2, figsize=(8, 5))
+    add_circle_to_ax(r_Li, x0, y0, axs[0], edgecolor='black', faceolor='gray', alpha=0.5) #gray circle = area of deposited Li
+        
+    # Squares to take SEM images for analysis
+    xy_coordinates_3_by_3_matrix_squares_numbers = add_3_by_3_matrix_of_squares_to_ax(square_side_length, x0, y0, distance_between_SEM_images, axs[0], n_decimals=3)
+    axs[1].table(xy_coordinates_3_by_3_matrix_squares_numbers, colLabels=('Square \\#', '$x$', '$y$'), fontsize=19, loc='center', edges='open', colLoc ='center', rowLoc='center', cellLoc='center')
+    for (i, x, y) in xy_coordinates_3_by_3_matrix_squares_numbers:
+        if i==1: print(f"\nPositions for the squares for analysis of SEM images (x, y):")
+        print(f"Position {i} of 9: ({x:.3f}, {y:.3f})")
 
-# Axis settings
-axs[0].set_aspect(1)
-alpha = 1.1
-axs[0].set_xlim(x0-r_Li*alpha, x0+r_Li*alpha)
-axs[0].set_ylim(y0-r_Li*alpha, y0+r_Li*alpha)
-axs[0].set_xlabel("$x$-coordinate")
-axs[0].set_ylabel("$y$-coordinate")
-axs[1].axis('tight')
-axs[1].axis('off')
+    # Axis settings
+    axs[0].set_aspect(1)
+    alpha = 1.1
+    axs[0].set_xlim(x0-r_Li*alpha, x0+r_Li*alpha)
+    axs[0].set_ylim(y0-r_Li*alpha, y0+r_Li*alpha)
+    axs[0].set_xlabel("$x$-coordinate")
+    axs[0].set_ylabel("$y$-coordinate")
+    axs[1].axis('tight')
+    axs[1].axis('off')
 
 
 # Print relative coordinate changes
