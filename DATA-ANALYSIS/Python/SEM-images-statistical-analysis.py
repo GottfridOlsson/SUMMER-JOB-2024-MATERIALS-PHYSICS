@@ -17,7 +17,7 @@ import plot_functions as f
 import CSV_handler as CSV
 import numpy as np
 import os
-
+import re
 
 
 # FUNCTIONS #
@@ -36,8 +36,6 @@ def getImagedAreaFromMagnification(magnification, pixel_area=512*512):
     return A
 
 def getMagnificationFromImageName(imageName):
-    # split at '_X' and keep left part
-    # split at '_'  and keep right part
     magnification = extractStringBetweenStrings(imageName, '_X', '_')
     return int(magnification)
 
@@ -55,7 +53,7 @@ def extractStringBetweenStrings(main_string, start_string, end_string):
     return main_string[start_index:end_index]
 
 def getAbsolutePathDirectoriesAndFilesInRootpath(rootpath):
-    # brrowed from: https://stackoverflow.com/questions/120656/directory-tree-listing-in-python?noredirect=1&lq=1
+    # borrowed from: https://stackoverflow.com/questions/120656/directory-tree-listing-in-python?noredirect=1&lq=1
     directory_paths, file_paths = [], []
 
     for dirname, dirnames, filenames in os.walk(rootpath):
@@ -71,10 +69,25 @@ def getAbsolutePathDirectoriesAndFilesInRootpath(rootpath):
 def isFileType(filePath, filetypeString):
     return filePath.endswith(filetypeString)
 
+
 def get_current_date_and_time_as_ISO8601_string():
     import datetime
     date_and_time = datetime.datetime.now().strftime("%Y%m%dT%H%M%S")
     return date_and_time
+
+
+def isSubstringPresentInString(mainString, listOfSubstrings):
+    # checks it one of 'string' in listOfSubstrings are contained in mainString using regular expression
+    isSubstringInString = False
+
+    # '(?:abc)' is regex for matching (case-sensitive) 'abc' 
+    for string in listOfSubstrings:
+        if any(re.findall(f"(?:{string})", mainString)):
+            isSubstringInString = True
+            return isSubstringInString
+        
+    return isSubstringInString
+
 
 
 # CONSTANTS #
@@ -91,7 +104,7 @@ font_size_tick = 11
 font_size_legend = 9
 
 x_label = "Particle radius / \\textmu m"
-y_label = "Number of particles"
+y_label = "Probability density"
 
 #x_lim = [np.min(x_data), np.max(x_data)]
 #y_lim = [np.min(y_data), np.max(y_data)]
@@ -105,9 +118,9 @@ f.set_LaTeX_and_CMU(True) #must run before plotting
 
 # ROOTPATH AND SAMPLE DIRECTORIES #
 rootpath_analyzed_images = "C:\\SUMMER-JOB-2024-MATERIALS-PHYSICS\\DATA-ANALYSIS\\ImageJ\\Images for analysis\\"
-samples = ["S08", "S18"]
+samples = ["S18"]  #["S08"]
 rootpath_statistical_analyzis = "C:\\SUMMER-JOB-2024-MATERIALS-PHYSICS\\DATA-ANALYSIS\\Python\\Statistical analysis\\"
-
+#selectedImages = ["090", "092", "094", "096", "103"]# for S18
 
 for sample in samples:
     roothpathSample = rootpath_analyzed_images + sample
@@ -124,8 +137,7 @@ for sample in samples:
         fileName = extractStringBetweenStrings(filePath, "\\" + sample + "\\", ".")
         magnification = getMagnificationFromImageName(fileName)
 
-
-        if isFileType(filePath, CSV_filetype):
+        if isFileType(filePath, CSV_filetype):# and isSubstringPresentInString(fileName, selectedImages):
             numberOfFilesAnalyzed = numberOfFilesAnalyzed + 1
 
             # Extract values
@@ -161,8 +173,15 @@ for sample in samples:
     fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(fig_width_cm/2.54, fig_height_cm/2.54), sharex=False, sharey=False)
 
     # Plot your data (axs.plot, .errorbar, .hist, ...)
-    axs.hist(all_radii_mu) #, linewidth=1.5, linestyle='', color='k', marker='o', markersize='4.5', label='Measured data')
-    #axs.plot(fit_x, fit_y, color='k', linestyle='-', label='Linear fit')
+    axs.hist(all_radii_mu, bins=51, density=True)#weights=np.ones(len(all_radii_mu))*(1/len(all_radii_mu))) #, linewidth=1.5, linestyle='', color='k', marker='o', markersize='4.5', label='Measured data')
+        # weights: all points are scaled with (1/n) to make the y-axis in fraction of counts
+
+    # Gaussian fit (assume normally distributed data all_radii_mu)
+    mean = np.mean(all_radii_mu)
+    variance = np.var(all_radii_mu)
+    x_fit = np.linspace(np.min(all_radii_mu), np.max(all_radii_mu), 200)
+    y_fit = (1/(np.sqrt(2*np.pi*variance)))*np.exp(-(x_fit-mean)**2/(2*variance))
+    axs.plot(x_fit, y_fit, color='k', linestyle='-', label='Gaussian fit')
 
     # Settings for each axis (axs)
     f.set_font_size(axis=font_size_axis, tick=font_size_tick, legend=font_size_legend)
@@ -179,7 +198,7 @@ for sample in samples:
     f.align_labels(fig)
     f.set_layout_tight(fig)
     PDF_path = rootpath_statistical_analyzis + sample + "_histogram_particle-size-distribution_" + get_current_date_and_time_as_ISO8601_string() + ".pdf"
-    f.export_figure_as_pdf(PDF_path)
+    #f.export_figure_as_pdf(PDF_path)
 
 
 
