@@ -182,4 +182,4 @@ for sample in samples:
 
 
 
-#plt.show()
+plt.show()
