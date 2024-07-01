@@ -2,9 +2,9 @@
    
 			 AUTHOR: GOTTFRID OLSSON
 			CREATED: 2024-02-26
-			UPDATED: 2024-06-28
+			UPDATED: 2024-07-01
 			  ABOUT: Macro to analyze particle size distribution from
-				 segmented images from ilastik software.
+				 segmented images (from the Ilastik software).
 
    ================================================================================== */
 
@@ -18,28 +18,28 @@
 // VARIABLES //
 
 rootFilepath = "C:/SUMMER-JOB-2024-MATERIALS-PHYSICS/DATA-ANALYSIS/ImageJ/Images for analysis/";
-folderNames = newArray("S08/"); //, "S09/");
+folderNames = newArray("S18/"); //"S08/", 
+nFolders = folderNames.length;
 
 TIFF = ".tiff";
 CSV = ".csv";
-nFolders = folderNames.length;
 
 print("START OF ANALYSIS");
 
 for (i = 0; i < nFolders; i++){ //for each folder in which there are several images to analyze
-
+	
 	folderName = folderNames[i];
 	listFilePaths = getFileList(rootFilepath + folderName);
 	
 	for (j = 0; j < listFilePaths.length; j++){ //for each image we want to analyze
-		
+		print(i, j);
 		currentFilePath = rootFilepath + folderName + listFilePaths[j];
 		currentFileName = removeFileExtension(currentFilePath);
 		currentImageName = getStringAfterLastDelimiter(currentFilePath, "/");
 
 		if (endsWith(currentFilePath, ".tiff") == false) {
-        		print("File is not a '.tiff': " + currentFilePath);
-        		break; // Exit the loop if the file is not a .tiff
+        		print("File is not a '.tiff': " + currentFilePath); # segmented images from Ilastik software
+        		break; // Exit the loop if the file is not a file form the Ilastik software
     		}
 		print("Analysing: " + currentFilePath);
 		

@@ -105,7 +105,7 @@ f.set_LaTeX_and_CMU(True) #must run before plotting
 
 # ROOTPATH AND SAMPLE DIRECTORIES #
 rootpath_analyzed_images = "C:\\SUMMER-JOB-2024-MATERIALS-PHYSICS\\DATA-ANALYSIS\\ImageJ\\Images for analysis\\"
-samples = ["S08"]
+samples = ["S08", "S18"]
 rootpath_statistical_analyzis = "C:\\SUMMER-JOB-2024-MATERIALS-PHYSICS\\DATA-ANALYSIS\\Python\\Statistical analysis\\"
 
 
@@ -178,7 +178,7 @@ for sample in samples:
 
     f.align_labels(fig)
     f.set_layout_tight(fig)
-    PDF_path = rootpath_statistical_analyzis + sample + "_histogram_particle-size-distribution_" + get_current_date_and_time_as_ISO8601_string + ".pdf"
+    PDF_path = rootpath_statistical_analyzis + sample + "_histogram_particle-size-distribution_" + get_current_date_and_time_as_ISO8601_string() + ".pdf"
     f.export_figure_as_pdf(PDF_path)
 
 
