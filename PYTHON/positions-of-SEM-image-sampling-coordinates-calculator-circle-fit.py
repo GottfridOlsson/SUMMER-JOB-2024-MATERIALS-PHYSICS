@@ -134,23 +134,23 @@ y0 = 4.8 #manual center
 #G=()
 #H=()
 
-points_on_the_circle = [[A[0], A[1]], [B[0], B[1]], [C[0], C[1]],[D[0], D[1]]]#, [E[0], E[1]], [F[0], F[1]], [G[0], G[1]], [H[0], H[1]]]
+#points_on_the_circle = [[A[0], A[1]], [B[0], B[1]], [C[0], C[1]],[D[0], D[1]]]#, [E[0], E[1]], [F[0], F[1]], [G[0], G[1]], [H[0], H[1]]]
 distance_between_SEM_images = 1 # mm, say we want to have this distance (x or y) between each square in the sampled matrix on the Cu
 include_AI_squares = False
 view_circle_fit = False
 export_figure = False
 
 # Circle fit
-x_center_fit, y_center_fit, r_fit, sigma_residual_fit = find_circle_center_and_radius_from_ABCD(points_on_the_circle, view_circle_fit)
+#x_center_fit, y_center_fit, r_fit, sigma_residual_fit = find_circle_center_and_radius_from_ABCD(points_on_the_circle, view_circle_fit)
 #x0 = x_center_fit
 #y0 = y_center_fit
-print(f"\nCircle with radius {r_fit:.2f} at origo: ({x0:.2f}, {y0:.2f})")
-print(f"Residual error of circle fit: {sigma_residual_fit:.5f}\n")
+#print(f"\nCircle with radius {r_fit:.2f} at origo: ({x0:.2f}, {y0:.2f})")
+#print(f"Residual error of circle fit: {sigma_residual_fit:.5f}\n")
 
 # Plot values
 r_real = 2.5 # mm (the punched Li has diameter 5 mm, or r = 2.5 mm in reality)
-distance_between_squares = (r_fit/r_real) * distance_between_SEM_images # gives the same unit that r_fit is in
-square_side_length = r_fit/15 #just to see the squares in the plot
+distance_between_squares = (r_real/r_real) * distance_between_SEM_images # gives the same unit that r_fit is in
+square_side_length = r_real/15 #just to see the squares in the plot
 distance_between_squares_AI_training = distance_between_squares/2.1 # extra images for AI-training, value arbitrarily chosen
 distance_between_squares_AI_training = 0.5
 
@@ -159,34 +159,36 @@ distance_between_squares_AI_training = 0.5
 f.set_LaTeX_and_CMU(True) #must run before plotting
 figure, axs = plt.subplots(1, 2, figsize=(8, 5))
 
-add_circle_to_ax(r_fit, x0, y0, axs[0], edgecolor='black', faceolor='gray', alpha=0.5) #gray circle = area of deposited Li
+add_circle_to_ax(r_real, x0, y0, axs[0], edgecolor='black', faceolor='gray', alpha=0.5) #gray circle = area of deposited Li
     
+'''
 if include_AI_squares: # Squares for SEM images to train AI (optional)
     xy_coordinates_3_by_3_matrix_squares_numbers_AI_squares = add_3_by_3_matrix_of_squares_to_ax(square_side_length, x0, y0, distance_between_squares_AI_training, axs[0], n_decimals=3, draw_numbers=0, edgecolor='k')
     for (i, x, y) in xy_coordinates_3_by_3_matrix_squares_numbers_AI_squares:
         if i==1:
             print(f"Positions for the squares for images to train AI:")
         print(f"Position {i} of 9: ({x:.3f}, {y:.3f})")
-
-
+'''
+'''
 # Squares to take SEM images for analysis
 xy_coordinates_3_by_3_matrix_squares_numbers = add_3_by_3_matrix_of_squares_to_ax(square_side_length, x0, y0, distance_between_squares, axs[0], n_decimals=3)
 axs[1].table(xy_coordinates_3_by_3_matrix_squares_numbers, colLabels=('Square \\#', '$x$', '$y$'), fontsize=19, loc='center', edges='open', colLoc ='center', rowLoc='center', cellLoc='center')
 for (i, x, y) in xy_coordinates_3_by_3_matrix_squares_numbers:
     if i==1: print(f"\nPositions for the squares for analysis of SEM images:")
     print(f"Position {i} of 9: ({x:.3f}, {y:.3f})")
-
 '''
+
 distance_between_squared_4_by_4 = 0.8 #mm
-distance_between_squares_4_by_4_SEM = (r_fit/r_real) * distance_between_squared_4_by_4 #in SEM coordinate system
+distance_between_squares_4_by_4_SEM = (r_real/r_real) * distance_between_squared_4_by_4 #in SEM coordinate system
 xy_coordinates_4_by_4_matrix_squares_numbers = add_4_by_4_matrix_of_squares_to_ax(square_side_length, x0, y0, distance_between_squares_4_by_4_SEM, axs[0], n_decimals=3)
 axs[1].table(xy_coordinates_4_by_4_matrix_squares_numbers, colLabels=('Square \\#', '$x$', '$y$'), fontsize=19, loc='center', edges='open', colLoc ='center', rowLoc='center', cellLoc='center')
 for (i, x, y) in xy_coordinates_4_by_4_matrix_squares_numbers:
     if i==1: print(f"\nPositions for the squares for analysis of SEM images:")
     print(f"Position {i} of 16: ({x:.3f}, {y:.3f})")
-'''
+
     
-    
+
+axs[0].scatter(x0,y0, linewidth=0.1, color='b')
 ## if there is a problem clearly seeing where the points A, B, C, and D is, take a point that is at the center of the Li-deposition and put that in as x0, y0 below
 '''
 Li_center_x = -9.85 
@@ -198,8 +200,8 @@ print(xy_coordinates_3_by_3_matrix_squares_numbers_test)
 # Axis settings
 axs[0].set_aspect(1)
 alpha=1.1
-axs[0].set_xlim(x0-r_fit*alpha, x0+r_fit*alpha)
-axs[0].set_ylim(y0-r_fit*alpha, y0+r_fit*alpha)
+axs[0].set_xlim(x0-r_real*alpha, x0+r_real*alpha)
+axs[0].set_ylim(y0-r_real*alpha, y0+r_real*alpha)
 axs[0].set_xlabel("$x$-coordinate")
 axs[0].set_ylabel("$y$-coordinate")
 axs[1].axis('tight')
