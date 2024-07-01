@@ -3,7 +3,7 @@
 ##        File: SEM-images-statistical-analysis.py
 ##      Author: GOTTFRID OLSSON 
 ##     Created: 2024-06-28
-##     Updated: 2024-06-28
+##     Updated: 2024-07-01
 ##       About: Analyze:
 ##              1) # particles per area, and
 ##              2) size distribution particles.
@@ -71,8 +71,10 @@ def getAbsolutePathDirectoriesAndFilesInRootpath(rootpath):
 def isFileType(filePath, filetypeString):
     return filePath.endswith(filetypeString)
 
-
-
+def get_current_date_and_time_as_ISO8601_string():
+    import datetime
+    date_and_time = datetime.datetime.now().strftime("%Y%m%dT%H%M%S")
+    return date_and_time
 
 
 # CONSTANTS #
@@ -176,7 +178,7 @@ for sample in samples:
 
     f.align_labels(fig)
     f.set_layout_tight(fig)
-    PDF_path = rootpath_statistical_analyzis + sample + "_histogram_particle-size-distribution.pdf"
+    PDF_path = rootpath_statistical_analyzis + sample + "_histogram_particle-size-distribution_" + get_current_date_and_time_as_ISO8601_string + ".pdf"
     f.export_figure_as_pdf(PDF_path)
 
 
