@@ -120,8 +120,8 @@ def get_current_date_and_time_as_ISO8601_string():
 
 
 # SEM-COORDINATES OF THE CENTER OF LI DEPOSITION #
-x0 = 6.0 #mm 
-y0 = 0.1  #mm
+x0 = -5.37 #mm 
+y0 = 4.55  #mm
 r_Li = 2.5 #mm
 distance_between_SEM_images = 1 # mm, distance (x or y) between each square in the sampled grid on the Cu
                                 # dx=dy=1 mm for 3x3; dx=dy=0.750 mm for 4x4 
